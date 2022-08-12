@@ -10,6 +10,7 @@ const client = new Client({
 });
 
 const mongoose = require('mongoose');
+const guildSchema = require('./src/Database/schemas/guild');
 
 const dotenv = require('dotenv');
 dotenv.config()
@@ -23,6 +24,8 @@ startup(client);
 client.staff = [
     '422603238936936450'
 ];
+
+client.Database = require('./Database/Mongoose.js');
 
 client.once('ready', async () => {
     console.log(`✅ ${client.user.tag} is now online!`);
@@ -39,6 +42,12 @@ client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand())  return;
 
     const command = client.cmdHandlers.get(interaction.commandName);
+
+    let userData = await client.Database.fetchUser(interaction.user.id);
+    if(!guildData) guildData = await client.Database.fetchGuild(interaction.guild.id);
+    let data = {};
+    data.user = userData;
+    data.guild = guildData;
 
     try {
         await command.handle(client, interaction)
