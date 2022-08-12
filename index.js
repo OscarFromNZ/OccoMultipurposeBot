@@ -13,7 +13,9 @@ const mongoose = require('mongoose');
 
 const dotenv = require('dotenv');
 dotenv.config()
+
 const TOKEN = process.env.TOKEN
+const MONGO_URI = process.env.MONGO_URI
 
 const startup = require('./src/startup');
 startup(client);
@@ -24,6 +26,13 @@ client.staff = [
 
 client.once('ready', async () => {
     console.log(`✅ ${client.user.tag} is now online!`);
+    try {
+        console.log("⌛ Connecting to MongoDB");
+        await mongoose.connect(MONGO_URI, { keepAlive: true });
+        console.log("✅ Connected to MongoDB");
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 client.on('interactionCreate', async (interaction) => {
