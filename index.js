@@ -9,7 +9,7 @@ const client = new Client({
     intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages ]
 });
 
-const fs = require('fs');
+const mongoose = require('mongoose');
 
 const dotenv = require('dotenv');
 dotenv.config()
@@ -19,17 +19,28 @@ const startup = require('./src/startup');
 startup(client);
 
 client.staff = [
-    'test'
+    '422603238936936450'
 ];
 
-console.log(client.staff);
-
-client.on('interactionCreate', async (interaction) => {
-
+client.once('ready', async () => {
+    console.log(`✅ ${client.user.tag} is now online!`);
 });
 
-client.on('messageCreate', async (interaction) => {
-    
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand())  return;
+
+    const command = client.cmdHandlers.get(interaction.commandName);
+
+    try {
+        await command.handle(client, interaction)
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+client.on('messageCreate', async (message) => {
+    if (!message)
+    if (!message.content.startsWith('-')) return;
 });
 
 
