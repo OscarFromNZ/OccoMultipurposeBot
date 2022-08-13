@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
     id: { type: String }, //ID of the guild
     registeredAt: { type: Number, default: Date.now() },
-    prefix: { type: String, default: config.prefix },
 
     addons: { type: Object, default: { // Extra features data
         poj: {
@@ -12,8 +11,8 @@ const schema = new mongoose.Schema({
             image: false, // Check if image is enabled
             embed: false // Check if embed is enabled
         },
-        goodbye: {
-            enabled: false, // Goodbye features are enabled
+        achievements: {
+            list: [], // List of all possible achievements
             channel:  null, // ID for channel to send messages to
             message: null, // Custom message
             image: false, // Check if image is enabled
@@ -22,4 +21,4 @@ const schema = new mongoose.Schema({
     }}
 })
 
-module.exports = mongoose.model('testing', schema);
+module.exports = mongoose.model('Guild', schema);

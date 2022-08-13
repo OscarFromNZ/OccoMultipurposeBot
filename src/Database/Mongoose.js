@@ -33,3 +33,26 @@ module.exports.fetchGuild = async function(key){
         return guildDB;
     }
 };
+
+
+
+//Create/find users Database
+module.exports.saveUser = async function(data){
+
+    try {
+        await data.member.save();
+
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+//Create/find Guilds Database
+module.exports.saveGuild = async function(data){
+    try {
+        await data.guild.save();
+
+    } catch (e) {
+        console.log(e);
+    }
+};

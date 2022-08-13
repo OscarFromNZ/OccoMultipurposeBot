@@ -25,7 +25,7 @@ client.staff = [
     '422603238936936450'
 ];
 
-client.Database = require('./Database/Mongoose.js');
+client.Database = require('./src/Database/Mongoose');
 
 client.once('ready', async () => {
     console.log(`✅ ${client.user.tag} is now online!`);
@@ -43,14 +43,27 @@ client.on('interactionCreate', async (interaction) => {
 
     const command = client.cmdHandlers.get(interaction.commandName);
 
-    let userData = await client.Database.fetchUser(interaction.user.id);
-    if(!guildData) guildData = await client.Database.fetchGuild(interaction.guild.id);
     let data = {};
-    data.user = userData;
-    data.guild = guildData;
+    try {
+        console.log("⌛ Fetching user data for " + interaction.user.username);
+        let userData = await client.Database.fetchUser(interaction.user.id);
+        console.log("✅ Fetched user data successfully");
+        console.log("⌛ Fetching guild data for " + interaction.guild.name);
+        let guildData = await client.Database.fetchGuild(interaction.guild.id);
+        console.log("✅ Fetched guild data successfully");
+    
+        console.log("⌛ Storing data onto data object");
+
+        data.user = userData;
+        data.guild = guildData;
+        console.log("✅ Data stored!");
+
+    } catch (e) {
+        console.log(e);
+    }
 
     try {
-        await command.handle(client, interaction)
+        await command.handle(client, interaction, data)
     } catch (e) {
         console.log(e);
     }

@@ -40,7 +40,7 @@ module.exports = {
         ),
 
 
-    async handle(client, interaction) {
+    async handle(client, interaction, data) {
         let subcmdName = await interaction.options.getSubcommand();
 
         console.log("\x1b[36m%s\x1b[0m", "Handling " + interaction.commandName + " " + subcmdName + " command");
@@ -52,7 +52,7 @@ module.exports = {
 
         try {
             console.log("⌛ Executing " + subcmdName);
-            await subcmdFile.execute(client, interaction);  
+            await subcmdFile.execute(client, interaction, data);  
             console.log("✅ Executed " + subcmdName);
             return;
 
