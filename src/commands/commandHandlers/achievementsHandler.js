@@ -40,7 +40,7 @@ module.exports = {
         console.log("\x1b[36m%s\x1b[0m", "Handling " + interaction.commandName + " " + subcmdName + " command");
 
         console.log("⌛ Getting correct file to execute`");
-        const subcmdFile = require(`../execute/POJ/${subcmdName}`);
+        const subcmdFile = require(`../execute/Achievements/${subcmdName}`);
         console.log("✅ Found the file of " + subcmdFile);
 
 
