@@ -36,16 +36,6 @@ client.once('ready', async () => {
             console.log("⌛ Adding DB to global variable");
             client.Database = db;
             console.log("✅ Added DB to global variable");
-
-            //console.log("⌛ Creating \"guilds\" collection");
-            //var dbo = db.db("mydb");
-            /*
-            dbo.createCollection("guilds", function(err, res) {
-              if (err) throw err;
-              console.log("✅ Collection created");
-              db.close();
-            });
-            */
             
           });
         
@@ -58,27 +48,6 @@ client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand())  return;
 
     const command = client.cmdHandlers.get(interaction.commandName);
-
-    /*
-    let data = {};
-    try {
-        console.log("⌛ Fetching user data for " + interaction.user.username);
-        let userData = await client.Database.fetchUser(interaction.user.id);
-        console.log("✅ Fetched user data successfully");
-        console.log("⌛ Fetching guild data for " + interaction.guild.name);
-        let guildData = await client.Database.fetchGuild(interaction.guild.id);
-        console.log("✅ Fetched guild data successfully \n" + guildData);
-    
-        console.log("⌛ Storing data onto data object");
-
-        data.user = userData;
-        data.guild = guildData;
-        console.log("✅ Data stored!");
-
-    } catch (e) {
-        console.log(e);
-    }
-    */
 
     try {
         await command.handle(client, interaction)
