@@ -14,21 +14,11 @@ module.exports = {
                 if (err) throw err;
 
                 var dbo = db.db("mydb");
-
+                var myobj = { name: "test", address: "testy" };
                 dbo.collection("guilds").insertOne(myobj, function(err, res) {
                   if (err) throw err;
-                  console.log("✅ Data saved!");
+                  console.log("1 document inserted");
                   db.close();
-                });
-
-                dbo.collection("guilds").find({}, { projection: { _id: 0, name: 1, address: 1 } }).toArray(function(err, result) {
-                    if (err) throw err;
-                    
-                    if (result.some(e => e.id === interaction.guild.id)) {
-                        
-                    }
-
-                    db.close();
                 });
 
             });
