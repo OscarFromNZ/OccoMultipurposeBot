@@ -23,7 +23,7 @@ module.exports = {
                 });
 
                 console.log(currentDoc);
-                let description;
+                let description = " ";
 
                 if (currentDoc) {
                     console.log("✅ Doc found");

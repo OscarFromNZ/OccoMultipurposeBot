@@ -17,10 +17,11 @@ dotenv.config()
 const TOKEN = process.env.TOKEN
 client.mongo_uri = process.env.MONGO_URI;
 
-client.prefix = '.';
 
 const startup = require('./src/startup');
 startup(client);
+
+client.prefix = '.';
 
 client.staff = [
     '422603238936936450'
