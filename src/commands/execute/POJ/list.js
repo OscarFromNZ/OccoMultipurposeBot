@@ -9,7 +9,7 @@ module.exports = {
 
             MongoClient.connect(client.mongo_uri, async function (err, db) {
                 if (err) {
-                    await interaction.reply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
+                    await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
                     throw err;
                 }
 
@@ -23,7 +23,7 @@ module.exports = {
                 });
 
                 console.log(currentDoc);
-                let description = " ";
+                let description = "\n";
 
                 if (currentDoc) {
                     console.log("✅ Doc found");
@@ -34,11 +34,11 @@ module.exports = {
 
                 if (!currentDoc) {
                     console.log("✅ Doc not found");
-                    await interaction.reply("<:Function_Cross:997678332902645890> I could not find any joinping channels for this server");
+                    await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any joinping channels for this server");
                     return;
                 }
 
-                await interaction.reply("<:Function_Tick:997678330277015553> **Here are the channels with joinping enabled in this server!** \n" + description);
+                await interaction.editReply("<:Function_Tick:997678330277015553> **Here are the channels with joinping enabled in this server!** \n" + description);
 
 
             });

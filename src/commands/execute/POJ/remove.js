@@ -9,7 +9,7 @@ module.exports = {
 
             MongoClient.connect(client.mongo_uri, async function (err, db) {
                 if (err) {
-                    await interaction.reply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
+                    await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
                     throw err;
                 }
 

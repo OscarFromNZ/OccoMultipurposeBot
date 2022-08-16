@@ -7,7 +7,7 @@ module.exports = {
 
             let channel = interaction.options.getChannel('channel');
             if (!channel) {
-                await interaction.reply("<:Function_Cross:997678332902645890> Sorry but I couldn't find the channel you gave me :/");
+                await interaction.editReply("<:Function_Cross:997678332902645890> Sorry but I couldn't find the channel you gave me :/");
                 return;
             }
 
@@ -15,7 +15,7 @@ module.exports = {
 
             MongoClient.connect(client.mongo_uri, async function (err, db) {
                 if (err) {
-                    await interaction.reply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
+                    await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
                     throw err;
                 }
 
@@ -35,7 +35,7 @@ module.exports = {
                     console.log("✅ Doc found");
                     if (currentDoc.channels.includes(channel.id)) {
                         console.log("Channel is already present in array");
-                        await interaction.reply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
+                        await interaction.editReply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
                         return;
                     }
                 }
@@ -47,7 +47,7 @@ module.exports = {
 
                     dbo.collection("guilds").insertOne(base, async function (err, res) {
                         if (err) {
-                            await interaction.reply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later :(");
+                            await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later :(");
                             throw err;
                         }
                         console.log("✅ Doc made");
@@ -55,7 +55,7 @@ module.exports = {
                     });
 
                     console.log("✅ Channel added");
-                    await interaction.reply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
+                    await interaction.editReply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
                     return;
                 }
 
@@ -69,7 +69,7 @@ module.exports = {
                     }
                 )
                 console.log("✅ Channel added");
-                await interaction.reply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
+                await interaction.editReply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
                 return;
 
             });
