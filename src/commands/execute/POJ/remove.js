@@ -5,6 +5,11 @@ module.exports = {
         try {
             console.log("\x1b[36m%s\x1b[0m", "Executing " + interaction.commandName + " command");
 
+            var channelName = interaction.options.getString("channel");
+            var channel = interaction.guild.channels.cache.find(channel => channel.name === channelName);
+            console.log(channel);
+            return; // Not finished yet, going to be returning for now i guess
+
             console.log("⌛ Connecting to Mongo");
 
             MongoClient.connect(client.mongo_uri, async function (err, db) {
@@ -21,6 +26,7 @@ module.exports = {
                 var currentDoc = await dbo.collection("guilds").findOne({
                     _id: interaction.guild.id
                 });
+
 
 
             });
