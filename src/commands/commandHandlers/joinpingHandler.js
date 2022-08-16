@@ -16,7 +16,7 @@ module.exports = {
                 .addChannelOption((option) =>
                     option
                         .setName('channel')
-                        .setDescription('The song to remove from the queue')
+                        .setDescription('The song to add to the joinping')
                         .setRequired(true)
                 )
         )
@@ -25,11 +25,12 @@ module.exports = {
             subcommand
                 .setName("remove")
                 .setDescription("🏓 Remove a channel from the joinping!")
-                .addChannelOption((option) =>
+                .addStringOption((option) =>
                     option
                         .setName('channel')
-                        .setDescription('The song to remove from the queue')
+                        .setDescription('The song to remove from the joinping')
                         .setRequired(true)
+                        .setAutocomplete(true)
                 )
         )
 
