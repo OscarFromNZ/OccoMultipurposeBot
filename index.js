@@ -6,7 +6,7 @@ const {
 } = require('discord.js');
 
 const client = new Client({
-    intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages ]
+    intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]
 });
 
 var MongoClient = require('mongodb').MongoClient;
@@ -16,6 +16,8 @@ dotenv.config()
 
 const TOKEN = process.env.TOKEN
 client.mongo_uri = process.env.MONGO_URI;
+
+client.prefix = '.';
 
 const startup = require('./src/startup');
 startup(client);
@@ -29,7 +31,7 @@ client.once('ready', async () => {
     console.log(`✅ ${client.user.tag} is now online!`);
     try {
         console.log("⌛ Connecting to MongoDB");
-        MongoClient.connect(client.mongo_uri, function(err, db) {
+        MongoClient.connect(client.mongo_uri, async function(err, db) {
             if (err) throw err;
             console.log("✅ Connected to MongoDB");
 
@@ -57,8 +59,18 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('messageCreate', async (message) => {
-    if (!message)
-    if (!message.content.startsWith('-')) return;
+    console.log('msg');
+    if (!client.staff.includes(message.author.id)) return;
+    if (!message.content.startsWith(client.prefix)) return;
+
+    console.log("⌛ Getting args for message`");
+    const args = message.content.trim().split(/ +/g);
+    const command = args[0].slice(client.prefix.length).toLowerCase(); 
+    console.log("✅ Args found");
+
+    console.log("⌛ Getting and calling the commmad handler`");
+    const ownerHandler = require('./src/commands/commandHandlers/ownerHandler');
+    ownerHandler.handle(client, message, command, args);
 });
 
 

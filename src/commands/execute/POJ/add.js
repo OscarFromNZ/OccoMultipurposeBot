@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 
 module.exports = {
-    async execute(client, interaction, data) {
+    async execute(client, interaction) {
         try {
             console.log("\x1b[36m%s\x1b[0m", "Executing " + interaction.commandName + " command");
 
