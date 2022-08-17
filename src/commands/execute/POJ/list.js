@@ -22,20 +22,29 @@ module.exports = {
                     _id: interaction.guild.id
                 });
 
-                console.log(currentDoc);
-                let description = "\n";
-
                 if (currentDoc) {
                     console.log("✅ Doc found");
-                    for (const channel of currentDoc.channels) {
-                        description = description + "<#" + channel + ">\n";
+                    if (!currentDoc.channels) {
+                        console.log("❌ No channels found");
+                        await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any channels in this server with joinping enabled");
+                        return;
                     }
-                }
-
-                if (!currentDoc) {
+                    if (currentDoc.channels.length === 0) {
+                        console.log("❌ No channels found on array");
+                        await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any channels in this server with joinping enabled");
+                        return;
+                    }
+                } else {
                     console.log("✅ Doc not found");
                     await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any joinping channels for this server");
                     return;
+                }
+
+
+                let description = "\n";
+
+                for (const channel of currentDoc.channels) {
+                    description = description + "<#" + channel + ">\n";
                 }
 
                 await interaction.editReply("<:Function_Tick:997678330277015553> **Here are the channels with joinping enabled in this server!** \n" + description);

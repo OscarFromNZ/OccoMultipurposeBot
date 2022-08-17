@@ -28,7 +28,7 @@ module.exports = {
                 .addStringOption((option) =>
                     option
                         .setName('channel')
-                        .setDescription('The song to remove from the joinping')
+                        .setDescription('The channel to remove from the joinping')
                         .setRequired(true)
                         .setAutocomplete(true)
                 )

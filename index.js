@@ -49,7 +49,7 @@ client.once('ready', async () => {
 
 client.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
-        interaction.reply("<:Function_Pending:997678338426535936> Thinking...")
+        await interaction.reply("<:Function_Pending:997678338426535936> Thinking...")
 
         const command = client.cmdHandlers.get(interaction.commandName);
 
