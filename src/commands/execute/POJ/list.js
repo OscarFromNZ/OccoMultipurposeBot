@@ -39,6 +39,7 @@ module.exports = {
                 }
 
                 await interaction.editReply("<:Function_Tick:997678330277015553> **Here are the channels with joinping enabled in this server!** \n" + description);
+                return;
 
 
             });

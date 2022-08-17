@@ -8,7 +8,6 @@ module.exports = {
             var channelName = interaction.options.getString("channel");
             var channel = interaction.guild.channels.cache.find(channel => channel.name === channelName);
             console.log(channel);
-            return; // Not finished yet, going to be returning for now i guess
 
             console.log("⌛ Connecting to Mongo");
 
@@ -27,7 +26,16 @@ module.exports = {
                     _id: interaction.guild.id
                 });
 
+                if (!currentDoc.channels.includes(channel.id)) {
+                    await interaction.editReply("<:Function_Cross:997678332902645890> This channel does not have joinping enabled");
+                    return;
+                }
 
+                currentDoc.channels.filter(achannel => achannel === channel.id);
+                console.log(currentDoc.channels);
+
+                await interaction.editReply("<:Function_Tick:997678330277015553> I have removed <#" + channel.id + "> from the joinping channels");
+                return;
 
             });
 
