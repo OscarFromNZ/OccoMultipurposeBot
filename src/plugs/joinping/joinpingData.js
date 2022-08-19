@@ -37,4 +37,8 @@ module.exports = {
                 .setName('list')
                 .setDescription('🏓 List all joinping channels in the server')
         ),
+
+    settings: {
+        isPremium: false
+    }
 }

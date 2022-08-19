@@ -41,7 +41,7 @@ module.exports = {
                 }
 
                 if (!currentDoc) {
-                    console.log("✅ Doc not found");
+                    console.log("❌ Doc not found");
                     console.log("⌛ Making doc for " + interaction.guild.name);
                     var base = { _id: interaction.guild.id, channels: [channel.id] };
 

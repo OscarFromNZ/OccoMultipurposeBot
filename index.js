@@ -6,8 +6,10 @@ const {
 } = require('discord.js');
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers ]
 });
+
+const akemi = require('./akemi');
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -110,6 +112,20 @@ client.on('interactionCreate', async (interaction) => {
 
 client.on('messageCreate', async (message) => {
     console.log('msg');
+
+
+    if (message.content === 'test') {
+        try {
+            if (await akemi.isJoinPingEnabled(client, message.guild) == true) {
+                const pingspoon = require("../plugs/joinping/joinpingSpoon");
+                await pingspoon.run(client, message.guild);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+
     if (!client.staff.includes(message.author.id)) return;
     if (!message.content.startsWith(client.prefix)) return;
 

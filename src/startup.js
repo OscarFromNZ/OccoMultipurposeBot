@@ -2,6 +2,7 @@ const { Collection } = require('discord.js');
 const { REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
+const path = require('node:path');
 
 const TOKEN = process.env.TOKEN
 const CLIENT_ID = process.env.CLIENT_ID
@@ -36,17 +37,17 @@ module.exports = async (client) => {
                 if (file.name.includes('Data')) {
                     console.log("⌛ Attempted to get datafile " + file.name);
 
-                        const datafile = require(`../src/plugs/${category.name}/${file.name}`);
-                        commandData.push(datafile.data.toJSON());
+                    const datafile = require(`../src/plugs/${category.name}/${file.name}`);
+                    commandData.push(datafile.data.toJSON());
 
                     console.log("✅ Found a data file " + file.name);
 
-                  // If the file found is a "hander" file, we will set it to a collection after getting it as so,
+                    // If the file found is a "hander" file, we will set it to a collection after getting it as so,
                 } else if (file.name.includes('Handler')) {
                     console.log("⌛ Attempted to get handlerfile " + file.name);
 
-                        const handlerfile = require(`../src/plugs/${category.name}/${file.name}`);
-                        client.commandHandlers.set(file.name, handlerfile);
+                    const handlerfile = require(`../src/plugs/${category.name}/${file.name}`);
+                    client.commandHandlers.set(file.name, handlerfile);
 
                     console.log("✅ Found a handler file " + file.name);
                 }
@@ -56,6 +57,28 @@ module.exports = async (client) => {
     });
 
     console.log("✅ Found info for all commands");
+
+
+    console.log("⌛ Registering event protocolsss...");
+    // Event handling
+    const eventsPath = path.join(__dirname, '../src/events');
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+    try {
+        for (const file of eventFiles) {
+            const event = require(`../src/events/${file}`);
+            if (event.once) {
+                client.once(event.name, (...args) => event.execute(client, ...args));
+            } else {
+                client.on(event.name, (...args) => event.execute(client, ...args));
+            }
+        }
+
+    } catch (e) {
+        console.log(e);
+    }
+
+    console.log("✅ Events intitialized!");
 
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
