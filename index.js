@@ -49,11 +49,11 @@ client.once('ready', async () => {
 
 client.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
-        await interaction.reply("<:Function_Pending:997678338426535936> Thinking...")
-
-        const command = client.cmdHandlers.get(interaction.commandName);
 
         try {
+            await interaction.reply("<:Function_Pending:997678338426535936> Thinking...");
+
+            const command = client.commandHandlers.get(interaction.commandName + "Handler.js");
             await command.handle(client, interaction)
         } catch (e) {
             console.log(e);
@@ -118,8 +118,11 @@ client.on('messageCreate', async (message) => {
     const command = args[0].slice(client.prefix.length).toLowerCase();
     console.log("✅ Args found");
 
-    console.log("⌛ Getting and calling the commmad handler`");
-    const ownerHandler = require('./src/commands/commandHandlers/ownerHandler');
+    console.log(client.ownerCmds + " are the owner-only cmds");
+    if (!client.ownerCmds.includes(command + ".js")) return message.reply("<:Function_Cross:997678332902645890> Invalid command!");
+
+    console.log("⌛ Getting and calling the commmand handler`");
+    const ownerHandler = require('./src/plugs/owner/ownerHandler');
     ownerHandler.handle(client, message, command, args);
 });
 

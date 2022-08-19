@@ -6,55 +6,68 @@ const fs = require('fs');
 const TOKEN = process.env.TOKEN
 const CLIENT_ID = process.env.CLIENT_ID
 
+const akemi = require('../akemi');
 
-module.exports = (client) => {
 
-    console.log("⌛ Finding owner commands...");
-    client.ownerCmds = [];
-    const ownerFiles = fs.readdirSync("./src/commands/execute/Owner")
-    .filter(file => file.endsWith('.js'))
+module.exports = async (client) => {
 
-    console.log("✅ Found owner commands");
-    console.log("⌛ Grabbing owner commands...");
+    client.ownerCmds = await akemi.getOwnerCommandsArray();
+    console.log(client.ownerCmds);
 
-    for (const file of ownerFiles) {
-        client.ownerCmds.push(file);
-        console.log("✅ Grabbed " + file);
-    }
+    // This is the data for each command so we can register the commands later on
+    const commandData = [];
 
-    console.log("\n");
+    // These are all the handlers for each command **group**
+    client.commandHandlers = new Collection();
 
-    const commands = [];
-    client.cmdHandlers = new Collection();
+    console.log("⌛ Finding commands info...");
 
-    console.log("⌛ Finding commands...");
-    const commandFiles = fs.readdirSync("./src/commands/commandHandlers")
-    .filter(file => file.endsWith('.js'))
-    .filter(file => file != ('ownerHandler.js'));
+    // A list of all plugs, eg: **joinping**
+    const plugs = fs.readdirSync("./src/plugs", { withFileTypes: true });
 
-    console.log("✅ Found commands");
-    console.log("⌛ Grabbing commands...");
+    // We are now going through each plug folder
+    plugs.filter(file => file.isDirectory()).forEach(category => {
+        console.log("⌛ Looking for folders under " + category.name);
+        // Now we are getting each file under the plug
+        fs.readdirSync(`./src/plugs/${category.name}`, { withFileTypes: true })
+            .filter(file => file.isFile()).forEach(file => {
+                console.log("⌛ Looking for files under " + category.name);
+                // If the file found is a "data" file, we will push it to an array after getting it as so,
+                if (file.name.includes('Data')) {
+                    console.log("⌛ Attempted to get datafile " + file.name);
 
-    for (const file of commandFiles) {
+                        const datafile = require(`../src/plugs/${category.name}/${file.name}`);
+                        commandData.push(datafile.data.toJSON());
 
-        const command = require(`../src/commands/commandHandlers/${file}`);
+                    console.log("✅ Found a data file " + file.name);
 
-        client.cmdHandlers.set(command.data.name, command);
-        commands.push(command.data.toJSON());
-        console.log("✅ Grabbed " + file);
-    }
+                  // If the file found is a "hander" file, we will set it to a collection after getting it as so,
+                } else if (file.name.includes('Handler')) {
+                    console.log("⌛ Attempted to get handlerfile " + file.name);
+
+                        const handlerfile = require(`../src/plugs/${category.name}/${file.name}`);
+                        client.commandHandlers.set(file.name, handlerfile);
+
+                    console.log("✅ Found a handler file " + file.name);
+                }
+            });
+
+        console.log("\n");
+    });
+
+    console.log("✅ Found info for all commands");
 
     const rest = new REST({ version: '10' }).setToken(TOKEN);
 
     (async () => {
         try {
             console.log("⌛ Beginning command deployment...");
-    
+
             await rest.put(
                 Routes.applicationCommands(CLIENT_ID),
-                { body: commands },
+                { body: commandData },
             );
-    
+
             console.log("✅ Deployed commands");
         } catch (error) {
             console.error(error);

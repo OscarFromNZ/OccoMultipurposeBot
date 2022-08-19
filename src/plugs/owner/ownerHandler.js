@@ -13,7 +13,7 @@ module.exports = {
 
         if (!client.ownerCmds.includes(command + ".js")) return message.reply("<:Function_Cross:997678332902645890> Invalid command!");
 
-        const cmdFile = require(`../execute/Owner/${command}`);
+        const cmdFile = require(`./execute/${command}`);
 
         console.log("✅ Found the file " + cmdFile);
 
