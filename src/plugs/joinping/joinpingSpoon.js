@@ -1,8 +1,10 @@
 var MongoClient = require('mongodb').MongoClient;
 
 module.exports = {
-    async run(client, guild) {
+    async run(client, member) {
 
+        console.log("\n");
+        console.log("⌛ Initiating joinping spoon");
         try {
 
             MongoClient.connect(client.mongo_uri, async function (err, db) {
@@ -15,9 +17,9 @@ module.exports = {
     
                     var dbo = db.db("mydb");
     
-                    console.log("⌛ Getting doc for " + guild.name);
+                    console.log("⌛ Getting doc for " + member.guild.name);
                     var currentDoc = await dbo.collection("guilds").findOne({
-                        _id: guild.id
+                        _id: member.guild.id
                     });
     
                     if (!currentDoc) {
@@ -25,8 +27,10 @@ module.exports = {
                         return;
                     }
 
-                    for (const channel of currentDoc.channels) {
-                        
+                    for (const channelid of currentDoc.channels) {
+                        var channel = await client.channels.cache.get(channelid);
+                        var msg = await channel.send(`<@${member.id}>`);
+                        await msg.delete();
                     }
     
                 } catch (e) { console.log(e) }
@@ -37,6 +41,8 @@ module.exports = {
         } catch (e) {
             console.log(e);
         }
+
+        console.log("✅ Joinping complete");
 
     }
 

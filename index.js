@@ -114,6 +114,7 @@ client.on('messageCreate', async (message) => {
     console.log('msg');
 
 
+    /*
     if (message.content === 'test') {
         try {
             if (await akemi.isJoinPingEnabled(client, message.guild) == true) {
@@ -124,6 +125,7 @@ client.on('messageCreate', async (message) => {
             console.log(e);
         }
     }
+    */
 
 
     if (!client.staff.includes(message.author.id)) return;
