@@ -5,7 +5,7 @@ module.exports = {
 
             var guilds = await client.guilds.cache.size.toString();
 
-            await message.reply("<:Function_Tick:997678330277015553> I am currently in " + guilds + " servers")
+            await message.reply("<:Function_Information:1010354012790476870> I am currently in " + guilds + " servers")
 
         } catch (e) {
             console.log(e);

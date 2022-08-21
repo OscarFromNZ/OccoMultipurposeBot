@@ -6,7 +6,7 @@ const {
 } = require('discord.js');
 
 const client = new Client({
-    intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers ]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers]
 });
 
 const akemi = require('./akemi');
@@ -34,15 +34,9 @@ client.once('ready', async () => {
     console.log(`✅ ${client.user.tag} is now online!`);
     try {
         console.log("⌛ Connecting to MongoDB");
-        MongoClient.connect(client.mongo_uri, async function (err, db) {
-            if (err) throw err;
-            console.log("✅ Connected to MongoDB");
 
-            console.log("⌛ Adding DB to global variable");
-            client.Database = db;
-            console.log("✅ Added DB to global variable");
-
-        });
+        const loadDB = require('./src/db');
+        client.db = await loadDB(client);
 
     } catch (e) {
         console.log(e);
@@ -63,49 +57,39 @@ client.on('interactionCreate', async (interaction) => {
 
     } else if (interaction.isAutocomplete()) {
 
-        MongoClient.connect(client.mongo_uri, async function (err, db) {
-            if (err) {
-                await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
-                throw err;
-            }
+        try {
+            var dbo = client.db
 
-            console.log("✅ Connected successfully");
+            let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
 
-            try {
-                var dbo = db.db("mydb");
-
-                console.log("⌛ Getting doc for " + interaction.guild.name);
-                var currentDoc = await dbo.collection("guilds").findOne({
-                    _id: interaction.guild.id
-                });
-
-                if (currentDoc) {
-                    console.log("✅ Doc found");
-                    const choices = [];
-                    for (let i = 0; i < currentDoc.channels.length; i++) {
-                        let channel = client.channels.cache.get(currentDoc.channels[i]);
+            if (currentDoc) {
+                console.log("✅ Doc found");
+                const choices = [];
+                for (let i = 0; i < currentDoc.channels.length; i++) {
+                    let channel = await client.channels.cache.get(currentDoc.channels[i]);
+                    if( typeof channel === 'undefined' ) {
+                        choices.push("#deleted-channel");
+                    } else {
                         choices.push(channel.name);
                     }
-
-                    console.log("Choices are " + choices);
-
-                    const focusedValue = interaction.options.getFocused();
-                    const filtered = choices.filter(choice => choice.startsWith(focusedValue));
-                    await interaction.respond(
-                        filtered.map(choice => ({ name: choice, value: choice })),
-                    );
-
-                } else {
-                    console.log("❌ Doc not found");
-                    return;
                 }
 
-            } catch (e) {
-                console.log(e)
+                console.log("Choices are " + choices);
+
+                const focusedValue = interaction.options.getFocused();
+                const filtered = choices.filter(choice => choice.startsWith(focusedValue));
+                await interaction.respond(
+                    filtered.map(choice => ({ name: choice, value: choice })),
+                );
+
+            } else {
+                console.log("❌ Doc not found");
+                return;
             }
 
-
-        });
+        } catch (e) {
+            console.log(e)
+        }
 
     }
 });

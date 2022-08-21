@@ -1,5 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 
+const akemi = require('../../../../akemi');
+
 module.exports = {
     async execute(client, interaction) {
         try {
@@ -11,68 +13,48 @@ module.exports = {
                 return;
             }
 
-            console.log("⌛ Connecting to Mongo");
 
-            MongoClient.connect(client.mongo_uri, async function (err, db) {
-                if (err) {
-                    await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later");
-                    throw err;
-                }
+            var dbo = client.db
 
-                console.log("✅ Connected successfully");
+            let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
 
-                var dbo = db.db("mydb");
+            if (currentDoc.channels.includes(channel.id)) {
+                console.log("Channel is already present in array");
+                await interaction.editReply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
+                return;
+            }
 
-                console.log("⌛ Getting doc for " + interaction.guild.name);
-                var currentDoc = await dbo.collection("guilds").findOne({
-                    _id: interaction.guild.id
+
+            if (!currentDoc) {
+                console.log("❌ Doc not found");
+                console.log("⌛ Making doc for " + interaction.guild.name);
+                var base = { _id: interaction.guild.id, channels: [channel.id] };
+
+                dbo.collection("guilds").insertOne(base, async function (err, res) {
+                    if (err) {
+                        await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later :(");
+                        throw err;
+                    }
+                    console.log("✅ Doc made");
                 });
 
-                console.log(currentDoc);
-                
-
-                if (currentDoc) {
-                    console.log("✅ Doc found");
-                    if (currentDoc.channels.includes(channel.id)) {
-                        console.log("Channel is already present in array");
-                        await interaction.editReply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
-                        return;
-                    }
-                }
-
-                if (!currentDoc) {
-                    console.log("❌ Doc not found");
-                    console.log("⌛ Making doc for " + interaction.guild.name);
-                    var base = { _id: interaction.guild.id, channels: [channel.id] };
-
-                    dbo.collection("guilds").insertOne(base, async function (err, res) {
-                        if (err) {
-                            await interaction.editReply("<:Function_Cross:997678332902645890> I failed to connect to my database, try again later :(");
-                            throw err;
-                        }
-                        console.log("✅ Doc made");
-                        db.close();
-                    });
-
-                    console.log("✅ Channel added");
-                    await interaction.editReply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
-                    return;
-                }
-
-                console.log("⌛ Adding channel to channel array");
-                dbo.collection("guilds").updateOne({ _id: interaction.guild.id },
-                    {
-                        $push:
-                        {
-                            channels: channel.id
-                        }
-                    }
-                )
                 console.log("✅ Channel added");
                 await interaction.editReply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
                 return;
+            }
 
-            });
+            console.log("⌛ Adding channel to channel array");
+            dbo.collection("guilds").updateOne({ _id: interaction.guild.id },
+                {
+                    $push:
+                    {
+                        channels: channel.id
+                    }
+                }
+            )
+            console.log("✅ Channel added");
+            await interaction.editReply(`<:Function_Tick:997678330277015553> Successfully added <#${channel.id}> to the joinping channels for this server`);
+            return;
 
         } catch (e) {
             console.log(e);

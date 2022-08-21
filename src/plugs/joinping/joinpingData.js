@@ -14,7 +14,7 @@ module.exports = {
                 .addChannelOption((option) =>
                     option
                         .setName('channel')
-                        .setDescription('The song to add to the joinping')
+                        .setDescription('The channel to add to the joinping')
                         .setRequired(true)
                 )
         )
