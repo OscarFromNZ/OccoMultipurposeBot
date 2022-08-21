@@ -27,6 +27,8 @@ module.exports = {
                 description = description + "<#" + channel + ">\n";
             }
 
+            description = description + "\n <:Function_Tick:997678330277015553> I will ping users in these channels one by one in the order specified";
+
             await interaction.editReply("<:Function_Tick:997678330277015553> **Here are the channels with joinping enabled in this server!** \n" + description);
             return;
 

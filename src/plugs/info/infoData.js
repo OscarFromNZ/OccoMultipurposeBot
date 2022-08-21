@@ -15,7 +15,7 @@ module.exports = {
                     option
                         .setName('user')
                         .setDescription('The user to get information')
-                        .setRequired(true)
+                        .setRequired(false)
                 )
         )
 

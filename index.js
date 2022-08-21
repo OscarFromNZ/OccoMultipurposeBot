@@ -1,7 +1,6 @@
 const {
     Client,
     Intents,
-    MessageEmbed,
     GatewayIntentBits
 } = require('discord.js');
 
@@ -97,20 +96,13 @@ client.on('interactionCreate', async (interaction) => {
 client.on('messageCreate', async (message) => {
     console.log('msg');
 
-
     /*
     if (message.content === 'test') {
-        try {
-            if (await akemi.isJoinPingEnabled(client, message.guild) == true) {
-                const pingspoon = require("../plugs/joinping/joinpingSpoon");
-                await pingspoon.run(client, message.guild);
-            }
-        } catch (e) {
-            console.log(e);
-        }
+        let channel = await message.guild.channels.cache.get("1009967950888976465");
+        console.log(channel.position);
+        console.log(channel.rawPosition);
     }
     */
-
 
     if (!client.staff.includes(message.author.id)) return;
     if (!message.content.startsWith(client.prefix)) return;
