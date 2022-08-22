@@ -23,6 +23,7 @@ module.exports = {
             let schema = `\
             Account created <t:${createdAt}:R>
             Joined <t:${joinedAt}:R>
+            \`${user.id}\`
             `
 
             console.log(banner);
@@ -32,7 +33,7 @@ module.exports = {
                 .setThumbnail(avatar)
                 .setDescription(schema)
 
-            await interaction.editReply( { embeds: [emb], content: "<:Function_Tick:997678330277015553> Here you go!" } );
+            await interaction.editReply({ embeds: [emb], content: "<:Function_Tick:997678330277015553> Here you go!" });
 
 
         } catch (e) {
