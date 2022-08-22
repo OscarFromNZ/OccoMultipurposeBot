@@ -43,54 +43,28 @@ client.once('ready', async () => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-    if (interaction.isCommand()) {
 
-        try {
-            await interaction.reply("<:Function_Pending:997678338426535936> Thinking...");
-
-            const command = client.commandHandlers.get(interaction.commandName + "Handler.js");
-            await command.handle(client, interaction)
-        } catch (e) {
-            console.log(e);
+    switch (interaction.type) {
+        case 2: { 
+            // ApplicationCommand 
+            await require('./src/interactions/applicationCommand')(client, interaction);
+            break;
+        } case 3: {
+            // MessageComponent
+            break;
+        } case 4: {
+            // Autocomplete
+            await require('./src/interactions/autocomplete')(client, interaction);
+            break;
+        } case 5: {
+            // ModalSubmit
+            break;
+        } default: {
+            // Ping or unknown
+            return;
         }
-
-    } else if (interaction.isAutocomplete()) {
-        // test
-        try {
-            var dbo = client.db
-
-            let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
-
-            if (currentDoc) {
-                console.log("✅ Doc found");
-                const choices = [];
-                for (let i = 0; i < currentDoc.channels.length; i++) {
-                    let channel = await client.channels.cache.get(currentDoc.channels[i]);
-                    if( typeof channel === 'undefined' ) {
-                        choices.push("#deleted-channel");
-                    } else {
-                        choices.push(channel.name);
-                    }
-                }
-
-                console.log("Choices are " + choices);
-
-                const focusedValue = interaction.options.getFocused();
-                const filtered = choices.filter(choice => choice.startsWith(focusedValue));
-                await interaction.respond(
-                    filtered.map(choice => ({ name: choice, value: choice })),
-                );
-
-            } else {
-                console.log("❌ Doc not found");
-                return;
-            }
-
-        } catch (e) {
-            console.log(e)
-        }
-
     }
+    
 });
 
 client.on('messageCreate', async (message) => {
