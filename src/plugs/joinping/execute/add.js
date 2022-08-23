@@ -13,22 +13,20 @@ module.exports = {
                 return;
             }
 
-
             var dbo = client.db
 
             let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
 
-            if (currentDoc.channels.includes(channel.id)) {
-                console.log("Channel is already present in array");
-                await interaction.editReply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
-                return;
-            }
-
-
             if (!currentDoc) {
                 console.log("❌ Doc not found");
                 console.log("⌛ Making doc for " + interaction.guild.name);
-                var base = { _id: interaction.guild.id, channels: [channel.id] };
+
+                var base = {
+                    id: interaction.guild.id, 
+                    joinping: {
+                        channels: [channel.id]
+                    }
+                };
 
                 dbo.collection("guilds").insertOne(base, async function (err, res) {
                     if (err) {
@@ -43,12 +41,27 @@ module.exports = {
                 return;
             }
 
+            if (!currentDoc.joinping) {
+                console.log("❌ No channels found");
+                await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any channels in this server with joinping enabled");
+                return;
+            }
+
+
+            if (currentDoc.joinping.channels.includes(channel.id)) {
+                console.log("Channel is already present in array");
+                await interaction.editReply("<:Function_Cross:997678332902645890> This channel already has joinping enabled, if you wish to remove it, run </joinping remove:1008619540373831680>");
+                return;
+            }
+
             console.log("⌛ Adding channel to channel array");
             dbo.collection("guilds").updateOne({ _id: interaction.guild.id },
                 {
-                    $push:
-                    {
-                        channels: channel.id
+                    joinping: {
+                        $push:
+                        {
+                            channels: channel.id
+                        }
                     }
                 }
             )

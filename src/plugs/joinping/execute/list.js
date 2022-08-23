@@ -9,12 +9,12 @@ module.exports = {
             let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
             console.log(currentDoc);
 
-            if (!currentDoc.channels) {
+            if (!currentDoc.joinping) {
                 console.log("❌ No channels found");
                 await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any channels in this server with joinping enabled");
                 return;
             }
-            if (currentDoc.channels.length === 0) {
+            if (currentDoc.joinping.channels.length === 0) {
                 console.log("❌ No channels found on array");
                 await interaction.editReply("<:Function_Cross:997678332902645890> I could not find any channels in this server with joinping enabled");
                 return;
@@ -22,8 +22,8 @@ module.exports = {
 
             let description = "\n";
 
-            console.log(currentDoc.channels);
-            for (const channel of currentDoc.channels) {
+            console.log(currentDoc.joinping.channels);
+            for (const channel of currentDoc.joinping.channels) {
                 description = description + "<#" + channel + ">\n";
             }
 

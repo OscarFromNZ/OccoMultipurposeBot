@@ -91,7 +91,7 @@ client.on('messageCreate', async (message) => {
 
     console.log("⌛ Getting and calling the commmand handler`");
     const ownerHandler = require('./src/plugs/owner/ownerHandler');
-    ownerHandler.handle(client, message, command, args);
+    await ownerHandler.handle(client, message, command, args);
 });
 
 

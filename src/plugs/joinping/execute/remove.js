@@ -15,7 +15,7 @@ module.exports = {
             let currentDoc = await akemi.getCurrentDoc(client, interaction.guild);
             console.log("✅ Doc found");
 
-            if (!currentDoc.channels.includes(channel.id)) {
+            if (!currentDoc.joinping.channels.includes(channel.id)) {
                 await interaction.editReply("<:Function_Cross:997678332902645890> This channel does not have joinping enabled");
                 return;
             }
@@ -23,9 +23,12 @@ module.exports = {
             console.log("⌛ Removing channel from channel array");
             dbo.collection("guilds").updateOne({ _id: interaction.guild.id },
                 {
-                    $pull:
-                    {
-                        channels: channel.id
+                    joinping: {
+                        
+                        $pull:
+                        {
+                            channels: channel.id
+                        }
                     }
                 }
             )
